@@ -1,120 +1,62 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [ currSymbols, setCurrSymbols ] = useState([['','']])
+  const [ currDays, setCurrDays ] = useState('')
+
+  const addInput = (e) => {
+    e.preventDefault()
+    setCurrSymbols([...currSymbols, ['','']])
+  }
+
+  const changeSymb = (e, ind) => {
+    let newSymbs = [...currSymbols]
+    newSymbs[ind][0] = e.target.value
+    setCurrSymbols(newSymbs)
+  }
+
+  const changeOwned = (e, ind) => {
+    let newSymbs = [...currSymbols]
+    newSymbs[ind][1] = e.target.value
+    setCurrSymbols(newSymbs)
+  }
+
+  const updateDays = (e) => {
+    setCurrDays(e.target.value)
+  }
+  
+  const handleAnalyze = (e) => {
+    e.preventDefault()
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <>
+      <h1> Crypto Portfolio Risk Dashboard </h1>
+      <div>
+        <h2> Enter Coin ID & Amount Held </h2>
+      {
+            currSymbols.map((input, ind) => {
+                return(
+                    <div key={ind}>
+                      <input placeholder='ex) bitcoin' type="text" value={currSymbols[ind][0]} onChange={(e) => changeSymb(e, ind)}/>
+                      <input placeholder='ex) 0.2' type="number" min="0" step="any" value={currSymbols[ind][1]} onChange={(e) => changeOwned(e, ind)}/>
+                    </div>
+                )
+            })
+        }
+      <form onSubmit={addInput}>
+        <button type="submit">Add Entry</button>
+      </form>
+      </div>
+      <div>
+        <h2> How Many Days To Analyze </h2>
+        <input type="number" min="1" value={ currDays } onChange={updateDays}/>
+      </div>
+      <div>
+      <button onClick={handleAnalyze} >Analyze</button>
+      </div>
+      </>
   )
 }
 
