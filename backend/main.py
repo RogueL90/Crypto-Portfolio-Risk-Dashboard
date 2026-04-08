@@ -3,8 +3,17 @@ from schemas import AddRequest
 from db import get_connection
 from fastapi import HTTPException
 from getstats import getStats
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # post a request
 @app.post("/addrequest")
