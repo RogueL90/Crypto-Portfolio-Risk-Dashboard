@@ -1,0 +1,16 @@
+CREATE DATABASE IF NOT EXISTS coinapp;
+
+CREATE TABLE requests(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    days INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Coins(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    request_id INT,
+    symbol VARCHAR(20) NOT NULL,
+    amt DECIMAL NOT NULL,
+    FOREIGN KEY (request_id) REFERENCES requests(id)
+);
+
