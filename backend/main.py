@@ -1,13 +1,14 @@
 from fastapi import FastAPI
-from schemas import AnalyzeRequest
+from schemas import AddRequest
 from db import get_connection
 from fastapi import HTTPException
+from getstats import getStats
 
 app = FastAPI()
 
 # post a request
 @app.post("/addrequest")
-def addRequest(body: AnalyzeRequest):
+def addRequest(body: AddRequest):
     con = get_connection()
     cur = None
     requestId = None
@@ -62,3 +63,30 @@ def sendRequests():
         con.close()
     return {"requests": requests}
     
+# return analysis of request
+@app.get("/analysis/{requestId}")
+def analyze(requestId: int):
+    con = get_connection()
+    cur = None
+    coins = []
+    days = 0
+    try:
+        cur = con.cursor()
+        cur.execute("""
+                    SELECT symbol, amt FROM Coins
+                    WHERE request_id = %s
+                    """, (requestId,))
+        coins = cur.fetchall()
+        cur.execute("""
+                    SELECT days FROM requests
+                    WHERE id = %s
+                    """, (requestId))
+        days = cur.fetchone()
+    except Exception:
+        raise HTTPException(status_code=500, detail="Database error")
+    finally:
+        if cur: 
+            cur.close()
+        con.close()
+    analysis = getStats(coins, days)
+    return { "coins": coins, "days": days } # to change
