@@ -1,13 +1,28 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { postRequest, getRequests }  from './services/requests'
 import './App.css'
 
 function App() {
   const [ currSymbols, setCurrSymbols ] = useState([['','']])
   const [ currDays, setCurrDays ] = useState('')
+  const [ requests, setRequests ] = useState([])
 
-  const addInput = (e) => {
+  useEffect(() => {
+    async function getReqAtStart(){
+    const res = await getRequests()
+    console.log(res)
+    setRequests(res)
+    }
+    getReqAtStart()
+}, [])
+
+  const handleInput = (e, add) => {
     e.preventDefault()
-    setCurrSymbols([...currSymbols, ['','']])
+    if(add){
+      setCurrSymbols([...currSymbols, ['','']])
+    } else{
+      setCurrSymbols(currSymbols.slice(0, -1))
+    }
   }
 
   const changeSymb = (e, ind) => {
@@ -26,8 +41,11 @@ function App() {
     setCurrDays(e.target.value)
   }
   
-  const handleAnalyze = (e) => {
+  const handleAnalyze = async (e) => {
     e.preventDefault()
+    const postRes = await postRequest(currDays, currSymbols)
+    const req = JSON.parse(postRes)
+    console.log(req)
   }
 
   return (
@@ -45,8 +63,11 @@ function App() {
                 )
             })
         }
-      <form onSubmit={addInput}>
+      <form onSubmit={(e) => handleInput(e, true)}>
         <button type="submit">Add Entry</button>
+      </form>
+      <form onSubmit={(e) => handleInput(e, false)}>
+        <button type="submit">Remove Entry</button>
       </form>
       </div>
       <div>
