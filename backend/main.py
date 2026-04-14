@@ -4,6 +4,7 @@ from db import get_connection
 from fastapi import HTTPException
 from getstats import getStats
 from fastapi.middleware.cors import CORSMiddleware
+import json
 
 app = FastAPI()
 
@@ -52,25 +53,46 @@ def addRequest(body: AddRequest):
     return {"requestId": requestId, "days": body.days}
 
 # return request table ID and days
-@app.get("/requests")
+@app.get("/requests")  
 def sendRequests():
     con = get_connection()
     cur = None
-    requests = []
     try:
         cur = con.cursor()
         cur.execute("""
-                    SELECT id, days FROM requests
-                    """)
-        requests = cur.fetchall()
-    except Exception:
-        con.rollback()
-        raise HTTPException(status_code=500, detail="Database error")
+            SELECT 
+                r.id,
+                r.days,
+                JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'symbol', c.symbol,
+                        'amt', c.amt
+                    )
+                ) AS Coins
+            FROM requests r
+            JOIN Coins c 
+                ON r.id = c.request_id
+            GROUP BY r.id, r.days
+        """)
+        rows = cur.fetchall()
+        result = []
+
+        for row in rows:
+            result.append({
+                "request_id": row["id"],
+                "days": row["days"],
+                "coins": json.loads(row["Coins"])
+            })
+
+        return result
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
     finally:
-        if cur: 
+        if cur:
             cur.close()
         con.close()
-    return {"requests": requests}
     
 # return analysis of request
 @app.get("/analysis/{requestId}")
@@ -97,5 +119,5 @@ def analyze(requestId: int):
         if cur: 
             cur.close()
         con.close()
-    analysis = getStats(coins, days)
-    return { "coins": coins, "days": days } # to change
+    analysis = getStats(coins, days['days'])
+    return analysis # to change
