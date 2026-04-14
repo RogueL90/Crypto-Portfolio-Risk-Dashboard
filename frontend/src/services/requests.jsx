@@ -18,4 +18,9 @@ const getRequests = async () => {
     return res.data
 }
 
-export { postRequest, getRequests }
+const analysis = async (reqId) => {
+    const res = await axios.get(url + `analysis/${reqId}`)
+    return res.data
+}
+
+export { postRequest, getRequests, analysis}

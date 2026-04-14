@@ -43,7 +43,15 @@ function App() {
   
   const handleAnalyze = async (e) => {
     e.preventDefault()
+    if(currSymbols == '' || currDays == ''){
+      console.log('Empty query')
+      return
+    }
     const postRes = await postRequest(currDays, currSymbols)
+    if(postRes == null){
+      console.log('Not a symbol')
+      return
+    }
     const req = JSON.parse(postRes)
     console.log(req)
   }
