@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { postRequest, getRequests }  from './services/requests'
+import { postRequest, getRequests, analysis}  from './services/requests'
 import './App.css'
 
 function App() {
   const [ currSymbols, setCurrSymbols ] = useState([['','']])
   const [ currDays, setCurrDays ] = useState('')
   const [ requests, setRequests ] = useState([])
+  const [ currScreen, setCurrScreen ] = useState(1)
 
   useEffect(() => {
     async function getReqAtStart(){
@@ -51,42 +52,52 @@ function App() {
     if(postRes == null){
       console.log('Not a symbol')
       return
-    }
-    const req = JSON.parse(postRes)
-    console.log(req)
+    } 
+    const req = postRes
+    const resAnalysis = await analysis(req.requestId)
+    console.log(resAnalysis)
   }
 
-  return (
+  if (currScreen == 1){
+    return (
+        <>
+        <h1> Crypto Portfolio Risk Dashboard </h1>
+        <div>
+          <h2> Enter Coin ID & Amount Held </h2>
+        {
+              currSymbols.map((input, ind) => {
+                  return(
+                      <div key={ind}>
+                        <input placeholder='ex) bitcoin' type="text" value={currSymbols[ind][0]} onChange={(e) => changeSymb(e, ind)}/>
+                        <input placeholder='ex) 0.2' type="number" min="0" step="any" value={currSymbols[ind][1]} onChange={(e) => changeOwned(e, ind)}/>
+                      </div>
+                  )
+              })
+          }
+        <form onSubmit={(e) => handleInput(e, true)}>
+          <button type="submit">Add Entry</button>
+        </form>
+        <form onSubmit={(e) => handleInput(e, false)}>
+          <button type="submit">Remove Entry</button>
+        </form>
+        </div>
+        <div>
+          <h2> How Many Days To Analyze </h2>
+          <input type="number" min="1" value={ currDays } onChange={updateDays}/>
+        </div>
+        <div>
+        <button onClick={handleAnalyze} >Analyze</button>
+        </div>
+        </>
+    )}
+  else{
+    return (
       <>
-      <h1> Crypto Portfolio Risk Dashboard </h1>
-      <div>
-        <h2> Enter Coin ID & Amount Held </h2>
-      {
-            currSymbols.map((input, ind) => {
-                return(
-                    <div key={ind}>
-                      <input placeholder='ex) bitcoin' type="text" value={currSymbols[ind][0]} onChange={(e) => changeSymb(e, ind)}/>
-                      <input placeholder='ex) 0.2' type="number" min="0" step="any" value={currSymbols[ind][1]} onChange={(e) => changeOwned(e, ind)}/>
-                    </div>
-                )
-            })
-        }
-      <form onSubmit={(e) => handleInput(e, true)}>
-        <button type="submit">Add Entry</button>
-      </form>
-      <form onSubmit={(e) => handleInput(e, false)}>
-        <button type="submit">Remove Entry</button>
-      </form>
-      </div>
-      <div>
-        <h2> How Many Days To Analyze </h2>
-        <input type="number" min="1" value={ currDays } onChange={updateDays}/>
-      </div>
-      <div>
-      <button onClick={handleAnalyze} >Analyze</button>
-      </div>
+      <p>Bozo INDEED</p>
       </>
-  )
+    )
+  }
+
 }
 
 export default App

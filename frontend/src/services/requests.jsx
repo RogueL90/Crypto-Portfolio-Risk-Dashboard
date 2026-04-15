@@ -10,7 +10,8 @@ const postRequest = async (days, coins) => {
             amt : coin[1]
         }))
     }
-    return (await axios.post(url + 'addrequest', addRequest)).data
+    const res = await axios.post(url + 'addrequest', addRequest)
+    return res.data
 }
 
 const getRequests = async () => {
