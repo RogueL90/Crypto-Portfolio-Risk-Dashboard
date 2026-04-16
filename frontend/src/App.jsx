@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
-import { postRequest, getRequests, analysis}  from './services/requests'
+import { postRequest, getRequests, analyze}  from './services/requests'
 import './App.css'
+import Display from './Components/Display'
 
 function App() {
   const [ currSymbols, setCurrSymbols ] = useState([['','']])
   const [ currDays, setCurrDays ] = useState('')
   const [ requests, setRequests ] = useState([])
   const [ currScreen, setCurrScreen ] = useState(1)
+  const [ analysis, setAnalysis ] = useState([])
 
   useEffect(() => {
     async function getReqAtStart(){
@@ -53,9 +55,17 @@ function App() {
       console.log('Not a symbol')
       return
     } 
+
     const req = postRes
-    const resAnalysis = await analysis(req.requestId)
+    const resAnalysis = await analyze(req.requestId)
+    setAnalysis(resAnalysis)
     console.log(resAnalysis)
+    setCurrScreen(2)
+  }
+
+  const handleHome = (e) => {
+    e.preventDefault()
+    setCurrScreen(1)
   }
 
   if (currScreen == 1){
@@ -93,7 +103,14 @@ function App() {
   else{
     return (
       <>
-      <p>Bozo INDEED</p>
+      <div>
+        { analysis.map(coin => <Display key={coin.symbol} coin={coin}/>) }
+      </div>
+      <div>
+      <form onSubmit={handleHome} >
+        <button type="submit">New Query</button>
+      </form>
+      </div>
       </>
     )
   }
