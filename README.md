@@ -101,4 +101,5 @@ For each coin, the backend computes:
 - Backend CORS is configured for frontend at `http://localhost:5173`.
 
 ## To Do:
-- Allow history deletion
+- Integrate ChartsJS
+- Fix rate limit bug
