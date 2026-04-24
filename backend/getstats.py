@@ -25,19 +25,19 @@ def getStats(coins: list[dict], days: int):
             data = res.json()
             misRes = httpx.get(misUrl)
             misData = misRes.json()
-
+            
             prices = np.array(data['prices'])
             market_cap = np.array(data['market_caps'])
             volume = np.array(data['total_volumes'])
 
-            currPrice = prices[len(prices)-1][1]
-            minPrice = np.min(prices[:,1])
-            maxPrice = np.max(prices[:,1])
-            avgPrice = np.mean(prices[:,1])
-            volatility = np.std(prices[:,1])
+            currPrice = round(prices[len(prices)-1][1], 2)
+            minPrice = round(np.min(prices[:,1]), 2)
+            maxPrice = round(np.max(prices[:,1]), 2)
+            avgPrice = round(np.mean(prices[:,1]), 2)
+            volatility = round(np.std(prices[:,1]), 2)
             priceTrend = np.polyfit(prices[:,0], prices[:,1], 1)[0]
-            change = currPrice/prices[0][1] - 1
-            profit = float(coin['amt']) * (currPrice - prices[0][1]) 
+            change = round(currPrice/prices[0][1] - 1, 2)
+            profit = round(float(coin['amt']) * (currPrice - prices[0][1]), 2)
 
             logo = misData['image']['small']
             symbol = misData['symbol'] # BTC
@@ -54,7 +54,7 @@ def getStats(coins: list[dict], days: int):
                 "minPrice" : minPrice,
                 "maxPrice" : maxPrice,
                 "avgPrice" : avgPrice,
-                "volatlity" : volatility,
+                "volatility" : volatility,
                 "priceTrend" : priceTrend,
                 "change" : change,
                 "profit" : profit,

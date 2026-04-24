@@ -95,7 +95,7 @@ def sendRequests():
         con.close()
     
 # return analysis of request
-@app.get("/analysis/{requestId}")
+@app.get("/analyze/{requestId}")
 def analyze(requestId: int):
     con = get_connection()
     cur = None
