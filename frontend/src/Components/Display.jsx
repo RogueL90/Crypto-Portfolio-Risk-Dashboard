@@ -8,13 +8,13 @@ const Display = (props) => {
         percentChange = Math.abs(percentChange)
     }
 return (
-    <>
-    <div>
-    <img src={coin.logo} />
-     <h1><a href={coin.homepage} target="_blank">{coin.name}</a></h1>
-    <h2>({coin.symbol})</h2>
+    <article className="coin-card">
+    <div className="coin-header">
+    <img className="coin-logo" src={coin.logo} />
+     <h1 className="coin-name"><a className="coin-link" href={coin.homepage} target="_blank">{coin.name}</a></h1>
+    <h2 className="coin-symbol">({coin.symbol})</h2>
     </div>
-    <div>
+    <div className="coin-metrics">
         <p>Current Price: ${coin.currPrice.toLocaleString()} USD</p>
         <p>Min/Max: ${coin.minPrice.toLocaleString()} / ${coin.maxPrice.toLocaleString()} USD</p>
         <p>Average: ${coin.avgPrice.toLocaleString()} USD</p>
@@ -22,7 +22,7 @@ return (
         <p>Trend: {coin.priceTrend}</p>
         <p>Profit: ${coin.profit.toLocaleString()} ( {sign}{(coin.change * 100).toLocaleString()}% )</p>
     </div>
-    </>
+    </article>
 )
 }
 
