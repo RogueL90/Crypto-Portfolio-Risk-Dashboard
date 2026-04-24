@@ -24,4 +24,9 @@ const analyze = async (reqId) => {
     return res.data
 }
 
-export { postRequest, getRequests, analyze}
+const removeRequest = async (reqId) => {
+    const res = await axios.delete(url + `remove/${reqId}`)
+    return res.data
+}
+
+export { postRequest, getRequests, analyze, removeRequest}

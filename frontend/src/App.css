@@ -116,9 +116,10 @@ button:active {
 }
 
 .history-button {
-  margin: 0 8px 8px 0;
+  margin: 0;
   background: #f2f6ff;
   color: #20447d;
+  border-radius: 10px 0 0 10px;
 }
 
 .history-item {
@@ -130,6 +131,29 @@ button:active {
 
 .history-item .history-button {
   margin: 0;
+}
+
+.history-actions {
+  display: inline-flex;
+  align-items: stretch;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #d5e1f3;
+  background: #f2f6ff;
+}
+
+.history-remove-button {
+  margin: 0;
+  padding: 10px 11px;
+  border-radius: 0 10px 10px 0;
+  border-left: 1px solid #d5e1f3;
+  background: #e8f0ff;
+  color: #24497f;
+  line-height: 1;
+}
+
+.history-remove-button:hover {
+  background: #dbe8ff;
 }
 
 .history-tooltip {

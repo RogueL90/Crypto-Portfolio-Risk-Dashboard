@@ -1,5 +1,5 @@
 import { useState, useEffect} from 'react'
-import { postRequest, getRequests, analyze}  from './services/requests'
+import { postRequest, getRequests, analyze, removeRequest }  from './services/requests'
 import './App.css'
 import Display from './Components/Display'
 
@@ -15,7 +15,6 @@ function App() {
     const res = await getRequests()
     setRequests(res)
   }
-
   const exampleSymbols = [
     "bitcoin",
     "ethereum",
@@ -96,6 +95,11 @@ function App() {
     return `Days: ${req.days}\nCoins: ${coinsText}`
   }
 
+  const removeReq = async (reqId) => {
+    await removeRequest(reqId)
+    await updateHistory()
+  }
+
   const renderHistory = () => {
     return (
       <section className="history-card">
@@ -103,13 +107,23 @@ function App() {
       {
         requests.map(req => (
           <span className="history-item" key={req.request_id}>
-            <button
-              className="history-button"
-              title={requestTooltip(req)}
-              onClick={() => updateDisplay(req.request_id)}
-            >
-              request {req.request_id}
-            </button>
+            <span className="history-actions">
+              <button
+                className="history-button"
+                title={requestTooltip(req)}
+                onClick={() => updateDisplay(req.request_id)}
+              >
+                request {req.request_id}
+              </button>
+              <button
+                className="history-remove-button"
+                title={`Remove request ${req.request_id}`}
+                aria-label={`Remove request ${req.request_id}`}
+                onClick={() => removeReq(req.request_id)}
+              >
+                ✖
+              </button>
+            </span>
             <span className="history-tooltip">{requestTooltip(req)}</span>
           </span>
         ))
@@ -120,6 +134,8 @@ function App() {
 
   const handleHome = (e) => {
     e.preventDefault()
+    setCurrSymbols([['','', 'ex) bitcoin', 'ex) 0.2']])
+    setCurrDays('')
     setCurrScreen(1)
   }
 

@@ -111,7 +111,7 @@ def analyze(requestId: int):
         cur.execute("""
                     SELECT days FROM requests
                     WHERE id = %s
-                    """, (requestId))
+                    """, (requestId,))
         days = cur.fetchone()
     except Exception:
         raise HTTPException(status_code=500, detail="Database error")
@@ -120,4 +120,34 @@ def analyze(requestId: int):
             cur.close()
         con.close()
     analysis = getStats(coins, days['days'])
-    return analysis # to change
+    return analysis 
+
+@app.delete("/remove/{reqId}")
+def removeFromId(reqId: int):
+    con = get_connection()
+    affected_rows = None
+    cur = None
+    try:
+        cur = con.cursor()
+        cur.execute(
+            """
+            DELETE FROM Coins 
+            WHERE request_id = %s
+            """, (reqId,)
+        )
+        cur.execute(
+            """
+            DELETE FROM requests 
+            WHERE id = %s
+            """, (reqId,)
+        )
+        affected_rows = cur.rowcount
+        con.commit()
+    except Exception as e: 
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if cur:
+            cur.close()
+        con.close()
+    return { "message": "deletion successful", "affectedRows" : affected_rows }
+    
