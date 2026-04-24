@@ -99,3 +99,6 @@ For each coin, the backend computes:
 
 - Coin IDs should match CoinGecko IDs (example: `bitcoin`, `ethereum`).
 - Backend CORS is configured for frontend at `http://localhost:5173`.
+
+## To Do:
+- Allow history deletion
